@@ -17,6 +17,7 @@ class CreateTask extends StatelessWidget {
       floatingActionButton: RaisedButton(
         onPressed: () async {
           appBloc.addNote(notesCtrl.text);
+          Navigator.pop(context);
         },
         child: Text('Save'),
       ),

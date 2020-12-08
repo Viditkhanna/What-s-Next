@@ -45,7 +45,7 @@ class AppBloc with ChangeNotifier {
 
     await _dbHelper.update({
       DatabaseHelper.columnId: id,
-      DatabaseHelper.columnStatus: val.trim(),
+      DatabaseHelper.columnNote: val.trim(),
     });
     return refreshNotes();
   }
