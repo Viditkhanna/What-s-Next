@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:whats_next/bloc/app_bloc.dart';
 import 'package:whats_next/db_helper/db_helper.dart';
 
 class CreateTask extends StatelessWidget {
@@ -7,19 +9,14 @@ class CreateTask extends StatelessWidget {
         MaterialPageRoute(builder: (_) => CreateTask()),
       );
   final notesCtrl = TextEditingController();
-  final dbHelper = DatabaseHelper.instance;
 
   @override
   Widget build(BuildContext context) {
+    final appBloc = Provider.of<AppBloc>(context);
     return Scaffold(
       floatingActionButton: RaisedButton(
-        onPressed: () async{
-          if (notesCtrl.text.trim().isEmpty) return;
-         await dbHelper.insert({
-            DatabaseHelper.columnNote: notesCtrl.text,
-            DatabaseHelper.columnStatus: 'pending',
-          });
-         Navigator.pop(context);
+        onPressed: () async {
+          appBloc.addNote(notesCtrl.text);
         },
         child: Text('Save'),
       ),
@@ -33,7 +30,9 @@ class CreateTask extends StatelessWidget {
             autofocus: true,
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
-                labelText: "What's next?", alignLabelWithHint: true),
+              labelText: "What's next?",
+              alignLabelWithHint: true,
+            ),
           ),
           SizedBox(height: 20),
         ],

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:whats_next/db_helper/db_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:whats_next/bloc/app_bloc.dart';
 
 class NotesCard extends StatelessWidget {
-  final dbHelper = DatabaseHelper.instance;
   final Map<String, dynamic> element;
-  final Function onChanged;
 
-  NotesCard({Key key, this.element, this.onChanged}) : super(key: key);
+  NotesCard({Key key, this.element}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final appBloc = Provider.of<AppBloc>(context);
     return Stack(
       children: [
         Card(
@@ -21,10 +21,7 @@ class NotesCard extends StatelessWidget {
                 Expanded(
                   child: TextFormField(
                     onFieldSubmitted: (val) {
-                      dbHelper.update({
-                        DatabaseHelper.columnId: element['id'],
-                        DatabaseHelper.columnNote: val,
-                      });
+                      appBloc.updateNote(element['id'], val);
                     },
                     initialValue: '${element['note']}',
                     decoration: InputDecoration(
@@ -35,12 +32,8 @@ class NotesCard extends StatelessWidget {
                 ),
                 if (element['status'] == 'pending')
                   InkWell(
-                    onTap: () async {
-                      await dbHelper.update({
-                        DatabaseHelper.columnId: element['id'],
-                        DatabaseHelper.columnStatus: 'complete',
-                      });
-                      onChanged();
+                    onTap: () {
+                      appBloc.changeNoteStatus(element['id'], 'complete');
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -52,12 +45,8 @@ class NotesCard extends StatelessWidget {
                   )
                 else
                   InkWell(
-                    onTap: () async {
-                      await dbHelper.update({
-                        DatabaseHelper.columnId: element['id'],
-                        DatabaseHelper.columnStatus: 'pending',
-                      });
-                      onChanged();
+                    onTap: () {
+                      appBloc.changeNoteStatus(element['id'], 'pending');
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -97,6 +86,7 @@ class NotesCard extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) {
+          final appBloc = Provider.of<AppBloc>(context);
           return AlertDialog(
             title: Text('Alert'),
             content: Text('Are you sure you want to delete this note'),
@@ -107,9 +97,8 @@ class NotesCard extends StatelessWidget {
                   },
                   child: Text('No')),
               FlatButton(
-                  onPressed: () async {
-                    await dbHelper.delete(id);
-                    onChanged();
+                  onPressed: () {
+                    appBloc.deleteNote(element['id']);
                     Navigator.pop(context);
                   },
                   child: Text('Yes')),
