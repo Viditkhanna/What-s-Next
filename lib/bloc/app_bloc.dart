@@ -1,16 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:whats_next/db_helper/db_helper.dart';
+import 'package:whats_next/models/notes_model.dart';
 
 class AppBloc with ChangeNotifier {
   final _dbHelper = DatabaseHelper.instance;
 
-  Future<List<Map<String, dynamic>>> _notes;
+  Future<List<NotesModel>> _notes;
 
   AppBloc() {
-    _notes = _dbHelper.queryAllRows();
+    _notes = _dbHelper.queryAllRows().then((value) {
+      return value.map((e) => NotesModel.fromMap(e)).toList();
+    });
   }
 
-  Future<List<Map<String, dynamic>>> get notes async => await _notes;
+  Future<List<NotesModel>> get notes async => await _notes;
 
   Future<void> addNote(String val) async {
     if (val.trim().isEmpty) return;
@@ -46,7 +49,10 @@ class AppBloc with ChangeNotifier {
   }
 
   void refreshNotes() {
-    _notes = _dbHelper.queryAllRows().whenComplete(() {
+    _notes = _dbHelper.queryAllRows().then((value) {
+      return value.map((e) => NotesModel.fromMap(e)).toList();
+    });
+    _notes.then((value) {
       notifyListeners();
     });
   }

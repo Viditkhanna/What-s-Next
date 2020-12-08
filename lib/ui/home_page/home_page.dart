@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whats_next/bloc/app_bloc.dart';
 import 'package:whats_next/db_helper/db_helper.dart';
+import 'package:whats_next/models/notes_model.dart';
 import 'package:whats_next/ui/create_task/create_task.dart';
 import 'package:whats_next/ui/widgets/notes_card.dart';
 
@@ -19,7 +20,7 @@ class HomePage extends StatelessWidget {
         child: Icon(Icons.add),
       ),
       appBar: AppBar(title: Text("What's Next")),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      body: FutureBuilder<List<NotesModel>>(
         future: appBloc.notes,
         builder: (context, snap) {
           if (snap.hasError) return Center(child: Text('${snap.error}'));

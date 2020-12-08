@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whats_next/bloc/app_bloc.dart';
+import 'package:whats_next/models/notes_model.dart';
 
 class NotesCard extends StatelessWidget {
-  final Map<String, dynamic> element;
+  final NotesModel element;
 
   NotesCard({Key key, this.element}) : super(key: key);
 
@@ -21,19 +22,19 @@ class NotesCard extends StatelessWidget {
                 Expanded(
                   child: TextFormField(
                     onFieldSubmitted: (val) {
-                      appBloc.updateNote(element['id'], val);
+                      appBloc.updateNote(element.id, val);
                     },
-                    initialValue: '${element['note']}',
+                    initialValue: '${element.note}',
                     decoration: InputDecoration(
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
                     ),
                   ),
                 ),
-                if (element['status'] == 'pending')
+                if (element.status == 'pending')
                   InkWell(
                     onTap: () {
-                      appBloc.changeNoteStatus(element['id'], 'complete');
+                      appBloc.changeNoteStatus(element.id, 'complete');
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -46,7 +47,7 @@ class NotesCard extends StatelessWidget {
                 else
                   InkWell(
                     onTap: () {
-                      appBloc.changeNoteStatus(element['id'], 'pending');
+                      appBloc.changeNoteStatus(element.id, 'pending');
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -65,7 +66,7 @@ class NotesCard extends StatelessWidget {
           right: 5,
           child: InkWell(
             onTap: () {
-              _showConfirmDialog(context, element['id']);
+              _showConfirmDialog(context, element.id);
             },
             child: CircleAvatar(
               radius: 8,
@@ -98,7 +99,7 @@ class NotesCard extends StatelessWidget {
                   child: Text('No')),
               FlatButton(
                   onPressed: () {
-                    appBloc.deleteNote(element['id']);
+                    appBloc.deleteNote(element.id);
                     Navigator.pop(context);
                   },
                   child: Text('Yes')),
