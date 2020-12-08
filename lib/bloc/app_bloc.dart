@@ -2,6 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:whats_next/db_helper/db_helper.dart';
 import 'package:whats_next/models/notes_model.dart';
 
+enum NoteStatus { PENDING, COMPLETE }
+
+var statusMap = {
+  NoteStatus.PENDING: 'pending',
+  NoteStatus.COMPLETE: 'complete',
+};
+
 class AppBloc with ChangeNotifier {
   final _dbHelper = DatabaseHelper.instance;
 
@@ -25,10 +32,10 @@ class AppBloc with ChangeNotifier {
     return refreshNotes();
   }
 
-  Future<void> changeNoteStatus(id, val) async {
+  Future<void> changeNoteStatus(id, NoteStatus val) async {
     await _dbHelper.update({
       DatabaseHelper.columnId: id,
-      DatabaseHelper.columnStatus: val,
+      DatabaseHelper.columnStatus: statusMap[val],
     });
     return refreshNotes();
   }

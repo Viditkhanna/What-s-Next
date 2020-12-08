@@ -31,10 +31,10 @@ class NotesCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (element.status == 'pending')
+                if (element.status == NoteStatus.PENDING)
                   InkWell(
                     onTap: () {
-                      appBloc.changeNoteStatus(element.id, 'complete');
+                      appBloc.changeNoteStatus(element.id, NoteStatus.COMPLETE);
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -47,7 +47,7 @@ class NotesCard extends StatelessWidget {
                 else
                   InkWell(
                     onTap: () {
-                      appBloc.changeNoteStatus(element.id, 'pending');
+                      appBloc.changeNoteStatus(element.id, NoteStatus.PENDING);
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
